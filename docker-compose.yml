@@ -25,7 +25,7 @@ services:
     container_name: "php-server"
     image: server-php-nginx
     volumes:
-      - ./:/var/www/html
+      - ./app/:/var/www/html
     ports:
       - "9000:9000"
 
@@ -43,7 +43,7 @@ services:
       - .docker/nginx/client-access.log:/var/log/nginx/client-access.log;
       - .docker/nginx/client-error.log:/var/log/nginx/client-error.log;
       # Server root
-      - ./:/var/www/html
+      - ./app/:/var/www/html
     ports:
       - "80:80"
       - "443:443"
@@ -55,5 +55,3 @@ services:
       - db
       - php
     tty: true
-
-

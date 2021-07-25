@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:8.0-fpm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   autoconf \
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN docker-php-ext-install gd intl pdo_mysql pdo_pgsql mysqli zip \
   && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-RUN pecl install imagick-3.4.3
+RUN pecl install imagick
 
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 

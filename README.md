@@ -12,7 +12,7 @@ By default this container runs:
 | Service  | Version      |
 |----------|--------------|
 | Server   | Nginx        |
-| PHP      | FPM:7.4      |
+| PHP      | FPM:8.0      |
 | Database | MariaDB:10.5 |
 
 All Docker customization stay at ".docker" folder. At the repository root you have to put the "docker-compose.yml" along with the app files.
