@@ -12,7 +12,7 @@ services:
       - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_DATABASE=db_name
+      #- MYSQL_DATABASE=db_name
     ports:
       - 8011:3306
     volumes:
