@@ -3,17 +3,18 @@
 ![](https://img.shields.io/github/stars/marcelocostabr/docker-template-default)
 ![](https://img.shields.io/github/license/marcelocostabr/docker-template-default)
 
-# Docker Server Template [Nginx + PHP 7.4 + MariaDB 10.5]
+# Docker Server Template [Nginx + PHP 8.0 + MariaDB 10.5 + PHPMyAdmin]
 
 Docker template with default images and customs on docker-compose.yml
 
 By default this container runs:
 
-| Service  | Version      |
-|----------|--------------|
-| Server   | Nginx        |
-| PHP      | FPM:8.0      |
-| Database | MariaDB:10.5 |
+| Service    | Version      |
+|------------|--------------|
+| Server     | Nginx        |
+| PHP        | FPM:8.0      |
+| Database   | MariaDB:10.5 |
+| PHPMyAdmin | Last         |
 
 All Docker customization stay at ".docker" folder. At the repository root you have to put the "docker-compose.yml" along with the app files.
 
