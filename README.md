@@ -3,176 +3,126 @@
 ![](https://img.shields.io/github/stars/marcelocostabr/docker-template-default)
 ![](https://img.shields.io/github/license/marcelocostabr/docker-template-default)
 
-# Docker Server Template [Nginx + PHP 8.0 + MariaDB 10.5 + PHPMyAdmin]
+# Modelo de Docker Server
+[Nginx + PHP 8.0 + MariaDB 10.5 + PHPMyAdmin]
 
-Docker template with default images and customs on docker-compose.yml
+Esta configuração contém:
 
-By default this container runs:
-
-| Service    | Version      |
+| Serviço    | Versão       |
 |------------|--------------|
-| Server     | Nginx        |
+| Nginx      | Última       |
 | PHP        | FPM:8.0      |
 | Database   | MariaDB:10.5 |
-| PHPMyAdmin | Last         |
+| PHPMyAdmin | Última       |
 
-All Docker customization stay at ".docker" folder. At the repository root you have to put the "docker-compose.yml" along with the app files.
+As configurações do docker estão dentro da pasta .docker:
 
-Please pay attention at assets folder organization:
-
-| Folder        | Description        |
+| Pasta         | Descrição          |
 |---------------|--------------------|
-| .docker/db    | folder for data persistence inside the container |
-| .docker/nginx | custom configuration for Nginx server |
-| .docker/php   | custom Dockerfile from PHP |
+| .docker/db    | Arquivos do banco de dados (será criada na instalação) |
+| .docker/nginx | Configuração do servidor Nginx |
+| .docker/php   | Arquivo Dockerfile para o PHP |
+| .docker/ssl   | Arquivos de certificado para usar o HTTPS |
 
-To use, please follow the steps bellow:
+Para usar, siga estes passos:
 
-1) [Clone this repository](#clone-this-repository)
-2) [Install Docker](#install-docker)
-3) [Setting up the Virtual Server](#setting-up-the-virtual-server)
-4) [SSL Certificate](#ssl-certificate)
-5) [Confidential Data]($confidential-data)
-6) [Run and manage the Docker Server](#run-docker)
-7) [Browse localhost](#browse)
+1) [Clone este repositório](#clone-este-repositório)
 
-## Clone this repository
 
-Open de root projects folder in the terminal and type:
+## Clone esse repositório
+
+Na pasta raís do seu projeto digite
 
 ```
-git clone https://github.com/marcelocostabr/docker-template-default.git
+git clone https://github.com/lazev/docker-template-default
 ```
 
-## Install Docker
+## Certificado para HTTPS
 
-Make sure you have Docker installed, in the terminal type:
+Para acesso por HTTPS é preciso ter um certificado (pode ser um auto-assinado para ambiente de desenvolvimento).
+
+No linux o comando é:
 
 ```
-docker -v
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert.key -out cert.crt
 ```
 
-If you have something like this: "Docker version 19.03.8, build afacb8b" you can continue, if not please go to [https://www.docker.com/](https://www.docker.com/).
+Nas perguntas que aparecem, a linha mais importante é a
+**Common Name (e.g. server FQDN or YOUR name) []:**
+onde você precisa informar o nome do seu servidor
+(o endereço que será usado para acessar pelo navedor).
 
-## Setting up the Virtual Server
+O padrão aqui é **dev.local**, se preferir outro, também é necessário alterar nas configurações do sevidor, mais abaixo.
 
-You must to edit ./docker/nginx/default.conf with the server name desired.
+Mova ou copie ambos arquivos cert.key e cert.crt para a pasta .docker/ssl.
+
+Para não usar HTTPS, comente as seguintes linhas no arquivo de configuração do Nginx (.docker/nginx/default.conf):
+
+```
+listen 443 ssl;
+ssl_certificate /etc/nginx/ssl/cert.crt;
+ssl_certificate_key /etc/nginx/ssl/cert.key;
+```
+
+## Configuração do servidor
+
+**.docker/nginx/default.conf:**
+Por padrão, a URL do projeto é **dev.local**, mas é possível alterar dentro das configurações do Nginx, na linha
 
 ```
 server_name dev.local www.dev.local;
 ```
-After that edit the /etc/hosts file in your OS adding the following line:
+
+**/etc/hosts:**
+O mesmo nome informado na configuração do Nginx precisa estar no hosts da máquina.
+
+No linux, rode o seguinte comando como ROOT:
 
 ```
-127.0.0.1 dev.local www.dev.local
+echo "127.0.0.1  dev.local www.dev.local" >> /etc/hosts
 ```
 
-Note: as default, you can use **dev.local**, this local url run out of the box with a SSL certificate. If you opt to change you will need to get a new SSL certificate for the new development domain.
+Caso tenha escolhido outro nome na configuração do Nginx, é preciso trocar aqui também.
 
-## SSL Certificate
 
-To access with **https** over localhost or custom Virtual Server (above), you have to generate a SSL Certificate. I recommend to use only the dev.local like the oficial local host, that way you need to generate only once the SSL certificate independent of the project.
+## Comandos básicos do docker
 
-### Install the mkcert ###
-
-**macOS**
-
-```
-brew install mkcert
-brew install nss # if you use Firefox
-```
-
-**Linux**
-
-```
-# only on linux must install Certutil first
-sudo apt install libnss3-tools -y
-
-sudo apt install libnss3-tools
-    -or-
-sudo yum install nss-tools
-    -or-
-sudo pacman -S nss
-    -or-
-sudo zypper install mozilla-nss-tools
-```
-
-**Windows**
-
-```
-# via Chocolatey (https://chocolatey.org/)
-choco install mkcert
-```
-
-### Generate Local CA ###
-
-```
-mkcert -install
-````
-
-### Generate Local SSL Certificates ###
-
-```
-sudo mkcert example.com '*.example.com' localhost 127.0.0.1 ::1
-````
-
-### Copy, Move and Rename ###
-
-Copy the certificate example.com+4.pem and key example.com+4-key.pem into folder .docker/nginx of your project.
-
-Rename these files to server.pem and server-key.pem and give the permission 644.
-
-```
-sudo chmod 644 server.pem
-sudo chmod 644 server-key.pem
-````
-
-## Confidential Data
-
-All confidential data, like passwords, e-mail credential and more must be saved on **secret/Config.php**.
-
-This file aren't track by git, to generate it you must edit **secret/Config-Sample.php** and save as like **secret/Config.php**.
-
-Note: when the project go live you must have to generate the Config.php with the server credentials and upload manually.
-
-## Run Docker
-
-After all done, you need to up the server only.
-
-Start Server (in background)
+**Iniciar o servidor**
+A opção -d não prende a tela do terminal, omita esta opção se deseja visualizar as informações do servidor.
 
 ```
 docker-compose up -d
 ```
 
-Stop Server and keep the images
+**Parar o servidor**
+Se a tela do terminal estiver presa com as informações do servidor, basta apertar CTRL+C para pará-lo.
 
 ```
 docker-compose down
 ```
 
-Rebuild Server
+**Refazer o servidor**
 
 ```
 docker-compose up -d --build
 ```
 
-List active containers
+**Listar todos os containers ativos**
 
 ```
 docker ps -a
 ```
 
-Stop and Remove all Containers
+**Parar e remover todos os containers**
 
 ```
 docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 ```
 
 
-## Browse
+## Navegador
 
-To access the server please go to:
+Para acessar site, os caminhos comuns são
 
 **http**
 [http://localhost](http://localhost) or [http://dev.local](http://dev.local)
