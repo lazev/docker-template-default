@@ -24,12 +24,10 @@ As configurações do docker estão dentro da pasta .docker:
 | .docker/php   | Arquivo Dockerfile para o PHP |
 | .docker/ssl   | Arquivos de certificado para usar o HTTPS |
 
-Para usar, siga estes passos:
-
-1) [Clone este repositório](#clone-este-repositório)
+## Para usar, siga estes passos:
 
 
-## Clone esse repositório
+## 1) Clone esse repositório
 
 Na pasta raís do seu projeto digite
 
@@ -37,7 +35,7 @@ Na pasta raís do seu projeto digite
 git clone https://github.com/lazev/docker-template-default
 ```
 
-## Certificado para HTTPS
+## 2) Certificado para HTTPS
 
 Para acesso por HTTPS é preciso ter um certificado (pode ser um auto-assinado para ambiente de desenvolvimento).
 
@@ -64,7 +62,7 @@ ssl_certificate /etc/nginx/ssl/cert.crt;
 ssl_certificate_key /etc/nginx/ssl/cert.key;
 ```
 
-## Configuração do servidor
+## 3) Configuração do servidor
 
 **.docker/nginx/default.conf:**
 Por padrão, a URL do projeto é **dev.local**, mas é possível alterar dentro das configurações do Nginx, na linha
