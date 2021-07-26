@@ -1,7 +1,4 @@
 .docker/db
-.idea/
-.idea
-/secret/Config.php
-.docker/nginx/server.pem
-.docker/nginx/server-key.pem
-.DS_Store
+.docker/ssl/cert.crt
+.docker/ssl/cert.key
+
