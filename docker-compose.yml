@@ -56,7 +56,7 @@ services:
     tty: true
 
   app:
-    image: phpmyadmin/phpmyadmin:latest
+    image: phpmyadmin
     restart: always
     links:
       - db
